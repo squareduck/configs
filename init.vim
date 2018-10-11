@@ -30,11 +30,13 @@ Plug 'tpope/vim-surround'
 "
 Plug 'airblade/vim-gitgutter'
 Plug 'lambdalisue/gina.vim'
+Plug 'itchyny/vim-gitbranch'
 "
 " # Appearance
 "
 Plug 'drewtempelmeyer/palenight.vim'
 Plug 'itchyny/lightline.vim'
+Plug 'maximbaz/lightline-ale'
 "
 " # Navigation
 "
@@ -55,6 +57,7 @@ Plug 'sjl/gundo.vim'
 "
 " # Languages
 "
+Plug 'w0rp/ale'
 Plug 'prabirshrestha/vim-lsp'
 Plug 'pangloss/vim-javascript'
 Plug 'leafgarland/typescript-vim'
@@ -99,6 +102,7 @@ set mouse=a
 set noshowmode
 set number
 set hidden
+set pumheight=10
 set noshowmatch
 set fillchars=
 set splitbelow
@@ -231,6 +235,10 @@ let g:tabman_width = 40
 let g:tabman_side = 'right'
 let g:tabman_number = 0
 "
+" Ale
+"
+let g:ale_lint_on_text_changed = 'never'
+"
 " Language Server
 "
 let g:lsp_diagnostics_echo_cursor = 1
@@ -265,12 +273,31 @@ let g:surround_indent = 0
 "
 " lightline
 "
+
 let g:lightline = {
       \ 'active': {
-      \   'left': [ [ 'mode', 'paste' ], [ 'readonly', 'relativepath', 'modified' ] ]
+      \   'left': [ [ 'mode', 'paste' ], [ 'readonly', 'gitbranch', 'relativepath', 'modified' ] ],
+	  \   'right': [ [ 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok', 'filetype' ] ] 
+      \ },
+	  \ 'component_function': {
+      \   'gitbranch': 'gitbranch#name'
       \ }
       \ }
+
 let g:lightline.colorscheme = 'palenight'
+
+let g:lightline.component_expand = {
+      \  'linter_checking': 'lightline#ale#checking',
+      \  'linter_warnings': 'lightline#ale#warnings',
+      \  'linter_errors': 'lightline#ale#errors',
+      \  'linter_ok': 'lightline#ale#ok',
+      \ }
+let g:lightline.component_type = {
+      \     'linter_checking': 'left',
+      \     'linter_warnings': 'warning',
+      \     'linter_errors': 'error',
+      \     'linter_ok': 'left',
+      \ }
 "
 " gitgutter
 "
@@ -330,9 +357,12 @@ nnoremap <leader>/ :nohlsearch<cr>
 "
 " ## File
 "
-" show file tree
-nnoremap <leader>ft :Defx -toggle -split=vertical -winwidth=40 -direction=topleft<cr>
-nnoremap <space>t :Defx -toggle -split=vertical -winwidth=40 -direction=topleft<cr>
+" show *directory* browser
+nnoremap <leader>fd :Defx -toggle -split=vertical -winwidth=40 -direction=topleft<cr>
+nnoremap <space>d :Defx -toggle -split=vertical -winwidth=40 -direction=topleft<cr>
+
+" *locate* the file in file tree
+nnoremap <leader>fl :Defx `expand('%:p:h')` -search=`expand('%:p')<cr>
 
 " go to file in project
 nnoremap <leader>fp :Files<cr>
@@ -352,9 +382,9 @@ nnoremap <space>. :w<cr>:call AltCommand(expand('%'), ':e')<cr>
 "
 " ## Tab
 "
-" toggle tab *drawer*
+" toggle *tab* browser
 nnoremap <leader>mt :TMToggle<cr>
-nnoremap <space>d :TMToggle<cr>
+nnoremap <space>t :TMToggle<cr>
 
 "
 " ## Window
@@ -410,6 +440,15 @@ xmap <space>a <Plug>(EasyAlign)
 "
 " ## Code
 "
+" go to previous linter error/warning
+nnoremap <silent> <leader>cn <Plug>(ale_previous_wrap)
+
+" go to previous linter error/warning
+nnoremap <silent> <leader>cp <Plug>(ale_previous_wrap)
+
+" go to next linter error/warning
+nnoremap <silent> <C-j> <Plug>(ale_next_wrap)
+
 " go to *definition*
 nnoremap <silent> <leader>cd :LspDefinition<cr>
 
