@@ -64,6 +64,7 @@ Plug 'leafgarland/typescript-vim'
 Plug 'maxmellon/vim-jsx-pretty'
 Plug 'rust-lang/rust.vim'
 Plug 'calviken/vim-gdscript3'
+Plug 'vim-ruby/vim-ruby'
 "
 call plug#end()
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -119,8 +120,8 @@ set nowrap
 "
 autocmd FileType defx call s:defx_my_settings()
 	function! s:defx_my_settings() abort
-	  nnoremap <silent><buffer><expr> <cr>
-	  \ defx#do_action('open')
+	  nnoremap <silent><buffer><expr> <CR>
+	  \ defx#do_action('open', 'wincmd w \| drop')
 	  nnoremap <silent><buffer><expr> c
 	  \ defx#do_action('copy')
 	  nnoremap <silent><buffer><expr> m
@@ -213,7 +214,7 @@ let g:fzf_colors =
 "
 let g:asyncomplete_remove_duplicates = 1
 let g:asyncomplete_smart_completion = 1
-let g:asyncomplete_auto_popup = 1
+let g:asyncomplete_auto_popup = 0
 set completeopt+=preview
 autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
 call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
@@ -436,6 +437,9 @@ nnoremap <space>h :GundoToggle<cr>
 " align text
 nmap <leader>ta <Plug>(EasyAlign)
 xmap <space>a <Plug>(EasyAlign)
+
+" search for word under cursor
+nnoremap * :keepjumps normal! mi*`i<cr>
 
 "
 " ## Code
