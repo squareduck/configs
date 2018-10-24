@@ -24,7 +24,16 @@ Plug 'jiangmiao/auto-pairs'
 Plug 'junegunn/vim-easy-align'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-eunuch'
-Plug 'tpope/vim-surround'
+Plug 'machakann/vim-sandwich'
+Plug 'AndrewRadev/splitjoin.vim'
+Plug 'hauleth/sad.vim'
+Plug 'AndrewRadev/sideways.vim'
+Plug 'wellle/targets.vim'
+Plug 'tommcdo/vim-exchange'
+Plug 'chaoren/vim-wordmotion'
+Plug 'haya14busa/vim-signjk-motion'
+Plug 'gcmt/wildfire.vim'
+Plug 'justinmk/vim-sneak'
 "
 " # Integration
 "
@@ -54,6 +63,7 @@ Plug 'prabirshrestha/asyncomplete-lsp.vim'
 Plug 'prabirshrestha/asyncomplete-buffer.vim'
 Plug 'prabirshrestha/asyncomplete-file.vim'
 Plug 'sjl/gundo.vim'
+Plug 'moll/vim-bbye'
 "
 " # Languages
 "
@@ -65,6 +75,7 @@ Plug 'maxmellon/vim-jsx-pretty'
 Plug 'rust-lang/rust.vim'
 Plug 'calviken/vim-gdscript3'
 Plug 'vim-ruby/vim-ruby'
+Plug 'rlue/vim-fold-rspec'
 "
 call plug#end()
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -102,6 +113,7 @@ set wildmenu
 set mouse=a
 set noshowmode
 set number
+set relativenumber
 set hidden
 set pumheight=10
 set noshowmatch
@@ -111,6 +123,10 @@ set splitright
 set wmh=0
 set textwidth=100
 set nowrap
+set foldenable
+set foldlevel=2
+set foldminlines=5
+
 "
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Plugins configuration                                            @pluginconfig
@@ -411,6 +427,13 @@ nnoremap <C-l> <C-w>l
 "
 " ## Buffer
 "
+
+" navigate to line below
+map gj <Plug>(signjk-j)
+
+" navigate to line above
+map gk <Plug>(signjk-k)
+
 " search for opened *buffer*
 nnoremap <leader>bb :Buffers<cr>
 nnoremap <space>b :Buffers<cr>
@@ -431,15 +454,30 @@ nnoremap <space>s :w<cr>
 nnoremap <leader>bh :GundoToggle<cr>
 nnoremap <space>h :GundoToggle<cr>
 
+" *delete* buffer
+nnoremap <leader>bd :Bdelete<cr>
+
 "
 " ## Text
 " 
 " align text
-nmap <leader>ta <Plug>(EasyAlign)
-xmap <space>a <Plug>(EasyAlign)
+nmap ga <Plug>(EasyAlign)
+xmap ga <Plug>(EasyAlign)
 
 " search for word under cursor
 nnoremap * :keepjumps normal! mi*`i<cr>
+
+" search for two characters
+map f <Plug>Sneak_s
+map F <Plug>Sneak_S
+
+" *replace* next motion
+nmap <leader>r <Plug>(sad-change-forward)
+xmap <leader>r <Plug>(sad-change-forward)
+
+" move item under cursor sideways in list
+nnoremap <leader>h :SidewaysLeft<cr>
+nnoremap <leader>l :SidewaysRight<cr>
 
 "
 " ## Code
