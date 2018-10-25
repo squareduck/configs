@@ -28,9 +28,6 @@ Plug 'machakann/vim-sandwich'
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'hauleth/sad.vim'
 Plug 'AndrewRadev/sideways.vim'
-Plug 'wellle/targets.vim'
-Plug 'tommcdo/vim-exchange'
-Plug 'chaoren/vim-wordmotion'
 Plug 'haya14busa/vim-signjk-motion'
 Plug 'gcmt/wildfire.vim'
 Plug 'justinmk/vim-sneak'
@@ -468,8 +465,7 @@ xmap ga <Plug>(EasyAlign)
 nnoremap * :keepjumps normal! mi*`i<cr>
 
 " search for two characters
-map f <Plug>Sneak_s
-map F <Plug>Sneak_S
+map <space>f <Plug>Sneak_s
 
 " *replace* next motion
 nmap <leader>r <Plug>(sad-change-forward)
