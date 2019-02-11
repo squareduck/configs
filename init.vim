@@ -24,9 +24,8 @@ Plug 'jiangmiao/auto-pairs'
 Plug 'junegunn/vim-easy-align'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-eunuch'
-Plug 'machakann/vim-sandwich'
+Plug 'tpope/vim-surround'
 Plug 'AndrewRadev/splitjoin.vim'
-Plug 'hauleth/sad.vim'
 Plug 'AndrewRadev/sideways.vim'
 Plug 'haya14busa/vim-signjk-motion'
 Plug 'gcmt/wildfire.vim'
@@ -37,6 +36,9 @@ Plug 'justinmk/vim-sneak'
 Plug 'airblade/vim-gitgutter'
 Plug 'lambdalisue/gina.vim'
 Plug 'itchyny/vim-gitbranch'
+Plug 'prettier/vim-prettier', {
+  \ 'do': 'yarn install',
+  \ 'for': ['javascript', 'typescript', 'typescript.tsx', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html'] }
 "
 " # Appearance
 "
@@ -46,7 +48,7 @@ Plug 'maximbaz/lightline-ale'
 "
 " # Navigation
 "
-Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins' }
+Plug 'scrooloose/nerdtree'
 Plug 'uptech/alt'
 Plug 'dyng/ctrlsf.vim'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -55,24 +57,26 @@ Plug 'kien/tabman.vim'
 "
 " # Utility
 "
-Plug 'prabirshrestha/asyncomplete.vim'
-Plug 'prabirshrestha/asyncomplete-lsp.vim'
-Plug 'prabirshrestha/asyncomplete-buffer.vim'
-Plug 'prabirshrestha/asyncomplete-file.vim'
+Plug 'zxqfl/tabnine-vim'
+" Plug 'prabirshrestha/asyncomplete.vim'
+" Plug 'prabirshrestha/asyncomplete-lsp.vim'
+" Plug 'prabirshrestha/asyncomplete-buffer.vim'
+" Plug 'prabirshrestha/asyncomplete-file.vim'
 Plug 'sjl/gundo.vim'
 Plug 'moll/vim-bbye'
 "
 " # Languages
 "
-Plug 'w0rp/ale'
 Plug 'prabirshrestha/vim-lsp'
+Plug 'elzr/vim-json'
+Plug 'gabrielelana/vim-markdown'
 Plug 'pangloss/vim-javascript'
+Plug 'mxw/vim-jsx'
 Plug 'leafgarland/typescript-vim'
-Plug 'maxmellon/vim-jsx-pretty'
 Plug 'rust-lang/rust.vim'
 Plug 'calviken/vim-gdscript3'
 Plug 'vim-ruby/vim-ruby'
-Plug 'rlue/vim-fold-rspec'
+Plug 'amadeus/vim-mjml'
 "
 call plug#end()
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -88,12 +92,25 @@ set directory=~/.vim/swp//
 "
 " # Editing
 "
+set expandtab
 set tabstop=4
 set softtabstop=4
 set shiftwidth=4
 set autoindent
 set nocindent
 set nosmartindent
+set nosmarttab
+
+"
+" # Filetype settings
+"
+autocmd BufNewFile,BufRead *.tsx set filetype=typescript.tsx
+autocmd FileType typescript setlocal ts=2 sts=2 sw=2
+autocmd FileType typescript.tsx setlocal ts=2 sts=2 sw=2
+
+autocmd BufNewFile,BufRead *.jsx set filetype=javascript.jsx
+autocmd FileType javascript setlocal ts=2 sts=2 sw=2
+autocmd FileType javascript.jsx setlocal ts=2 sts=2 sw=2
 
 "
 " UI
@@ -102,7 +119,6 @@ set t_Co=256
 set termguicolors
 set background=dark
 colorscheme palenight
-let g:palenight_terminal_italics=1
 hi link SpecialComment Comment
 set signcolumn=yes
 set showtabline=0
@@ -118,68 +134,13 @@ set fillchars=
 set splitbelow
 set splitright
 set wmh=0
-set textwidth=100
 set nowrap
-set foldenable
-set foldlevel=2
-set foldminlines=5
-
+set scrolloff=10
+set completeopt-=preview
 "
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Plugins configuration                                            @pluginconfig
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"
-" Defx
-"
-autocmd FileType defx call s:defx_my_settings()
-	function! s:defx_my_settings() abort
-	  nnoremap <silent><buffer><expr> <CR>
-	  \ defx#do_action('open', 'wincmd w \| drop')
-	  nnoremap <silent><buffer><expr> c
-	  \ defx#do_action('copy')
-	  nnoremap <silent><buffer><expr> m
-	  \ defx#do_action('move')
-	  nnoremap <silent><buffer><expr> p
-	  \ defx#do_action('paste')
-	  nnoremap <silent><buffer><expr> l
-	  \ defx#do_action('open')
-	  nnoremap <silent><buffer><expr> E
-	  \ defx#do_action('open', 'vsplit')
-	  nnoremap <silent><buffer><expr> P
-	  \ defx#do_action('open', 'pedit')
-	  nnoremap <silent><buffer><expr> K
-	  \ defx#do_action('new_directory')
-	  nnoremap <silent><buffer><expr> N
-	  \ defx#do_action('new_file')
-	  nnoremap <silent><buffer><expr> d
-	  \ defx#do_action('remove')
-	  nnoremap <silent><buffer><expr> r
-	  \ defx#do_action('rename')
-	  nnoremap <silent><buffer><expr> x
-	  \ defx#do_action('execute_system')
-	  nnoremap <silent><buffer><expr> yy
-	  \ defx#do_action('yank_path')
-	  nnoremap <silent><buffer><expr> .
-	  \ defx#do_action('toggle_ignored_files')
-	  nnoremap <silent><buffer><expr> h
-	  \ defx#do_action('cd', ['..'])
-	  nnoremap <silent><buffer><expr> ~
-	  \ defx#do_action('cd')
-	  nnoremap <silent><buffer><expr> q
-	  \ defx#do_action('quit')
-	  nnoremap <silent><buffer><expr> <Space>
-	  \ defx#do_action('toggle_select') . 'j'
-	  nnoremap <silent><buffer><expr> *
-	  \ defx#do_action('toggle_select_all')
-	  nnoremap <silent><buffer><expr> j
-	  \ line('.') == line('$') ? 'gg' : 'j'
-	  nnoremap <silent><buffer><expr> k
-	  \ line('.') == 1 ? 'G' : 'k'
-	  nnoremap <silent><buffer><expr> <C-r>
-	  \ defx#do_action('redraw')
-	  nnoremap <silent><buffer><expr> <C-g>
-	  \ defx#do_action('print')
-endfunction
 "
 " FZF
 "
@@ -225,23 +186,30 @@ let g:fzf_colors =
 "
 " AsyncComplete
 "
-let g:asyncomplete_remove_duplicates = 1
-let g:asyncomplete_smart_completion = 1
-let g:asyncomplete_auto_popup = 0
-set completeopt+=preview
-autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
-call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
-    \ 'name': 'buffer',
-    \ 'whitelist': ['*'],
-    \ 'blacklist': ['rust', 'javascript', 'typescript'],
-    \ 'completor': function('asyncomplete#sources#buffer#completor'),
-    \ }))
-au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
-    \ 'name': 'file',
-    \ 'whitelist': ['*'],
-    \ 'priority': 10,
-    \ 'completor': function('asyncomplete#sources#file#completor')
-    \ }))
+ " let g:asyncomplete_remove_duplicates = 1
+ " let g:asyncomplete_smart_completion = 1
+ " let g:asyncomplete_auto_popup = 1
+ " set completeopt+=preview
+ " autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
+ " call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
+ "     \ 'name': 'buffer',
+ "     \ 'whitelist': ['*'],
+ "     \ 'blacklist': ['rust', 'javascript', 'typescript'],
+ "     \ 'completor': function('asyncomplete#sources#buffer#completor'),
+ "     \ }))
+ " au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
+ "     \ 'name': 'file',
+ "     \ 'whitelist': ['*'],
+ "     \ 'priority': 10,
+ "     \ 'completor': function('asyncomplete#sources#file#completor')
+ "     \ }))
+"
+" NERDTree
+"
+let NERDTreeMinimalUI=1
+let NERDTreeQuitOnOpen = 1
+let NERDTreeDirArrows = 1
+let NERDTreeAutoDeleteBuffer = 1
 "
 " Tabman
 "
@@ -249,9 +217,12 @@ let g:tabman_width = 40
 let g:tabman_side = 'right'
 let g:tabman_number = 0
 "
-" Ale
+" Prettier
 "
-let g:ale_lint_on_text_changed = 'never'
+let g:prettier#exec_cmd_async = 1
+let g:prettier#quickfix_enabled = 0
+let g:prettier#autoformat = 0
+autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.yaml,*.html PrettierAsync
 "
 " Language Server
 "
@@ -277,7 +248,15 @@ if executable('typescript-language-server')
         \ 'name': 'typescript-language-server',
         \ 'cmd': {server_info->[&shell, &shellcmdflag, 'typescript-language-server --stdio']},
         \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'tsconfig.json'))},
-        \ 'whitelist': ['typescript'],
+        \ 'whitelist': ['typescript', 'typescript.tsx'],
+        \ })
+endif
+if executable('solargraph')
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'solargraph',
+        \ 'cmd': {server_info->[&shell, &shellcmdflag, 'solargraph stdio']},
+        \ 'initialization_options': {"diagnostics": "true"},
+        \ 'whitelist': ['ruby'],
         \ })
 endif
 "
@@ -291,7 +270,7 @@ let g:surround_indent = 0
 let g:lightline = {
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ], [ 'readonly', 'gitbranch', 'relativepath', 'modified' ] ],
-	  \   'right': [ [ 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok', 'filetype' ] ] 
+	  \   'right': [ [ 'lineinfo', 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok', 'filetype' ] ] 
       \ },
 	  \ 'component_function': {
       \   'gitbranch': 'gitbranch#name'
@@ -330,8 +309,11 @@ endfunction
 "
 " Vim-Markdown
 "
-let g:vim_markdown_folding_disabled = 1
-let g:vim_markdown_no_default_key_mappings = 1
+let g:markdown_enable_spell_checking = 0
+"
+" typescript-vim
+"
+let g:typescript_indent_disable = 1
 "
 " Rust.vim
 "
@@ -372,11 +354,11 @@ nnoremap <leader>/ :nohlsearch<cr>
 " ## File
 "
 " show *directory* browser
-nnoremap <leader>fd :Defx -toggle -split=vertical -winwidth=40 -direction=topleft<cr>
-nnoremap <space>d :Defx -toggle -split=vertical -winwidth=40 -direction=topleft<cr>
+nnoremap <leader>fd :NERDTreeToggle<cr>
+nnoremap <space>d :NERDTreeToggle<cr>
 
-" *locate* the file in file tree
-nnoremap <leader>fl :Defx `expand('%:p:h')` -search=`expand('%:p')<cr>
+" *locate* file in directory tree
+nnoremap <leader>fl :NERDTreeFind<cr>
 
 " go to file in project
 nnoremap <leader>fp :Files<cr>
@@ -467,10 +449,6 @@ nnoremap * :keepjumps normal! mi*`i<cr>
 " search for two characters
 map <space>f <Plug>Sneak_s
 
-" *replace* next motion
-nmap <leader>r <Plug>(sad-change-forward)
-xmap <leader>r <Plug>(sad-change-forward)
-
 " move item under cursor sideways in list
 nnoremap <leader>h :SidewaysLeft<cr>
 nnoremap <leader>l :SidewaysRight<cr>
@@ -485,7 +463,7 @@ nnoremap <silent> <leader>cn <Plug>(ale_previous_wrap)
 nnoremap <silent> <leader>cp <Plug>(ale_previous_wrap)
 
 " go to next linter error/warning
-nnoremap <silent> <C-j> <Plug>(ale_next_wrap)
+nnoremap <silent> <leader>cn <Plug>(ale_next_wrap)
 
 " go to *definition*
 nnoremap <silent> <leader>cd :LspDefinition<cr>
